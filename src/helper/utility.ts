@@ -4,8 +4,9 @@ import jwt from "jsonwebtoken";
 // import nodemailer from "nodemailer";
 import 'dotenv/config';
 import config from "../config/config";
+import log from './logger';
 
-const secretKey:any = process.env.SECRET 
+const secretKey:any = process.env.SECRET_KEY 
 
 export const utcDate = () => {
     const format = "YYYY-MM-DD HH:mm:ss";
@@ -41,22 +42,10 @@ export const timeDiff = (storedTimestamp:any) => {
 	const expirationDurationInMinutes = 5;
 
 	// const minutesDifference = currentTimestamp.diff(storedTimestamp, 'minute');
-	const duration = moment.duration(currentTimestamp.diff(storedTimestamp));
-	console.log("duration", JSON.stringify(duration));
+	const duration = moment.duration(currentTimestamp.diff(storedTimestamp));	
+	const minutesDifference = duration.asMinutes();	
 	
-	const minutesDifference = duration.asMinutes();
-
-	console.log("currentTimestamp", currentTimestamp);
-	console.log("storedTimestamp", storedTimestamp);
-	
-	
-	console.log("minutesDifference", minutesDifference);
-	console.log("expirationDurationInMinutes", expirationDurationInMinutes);
-
-    if (minutesDifference <= expirationDurationInMinutes) {
-		console.log("minutesDifference", minutesDifference);
-		console.log("expirationDurationInMinutes", expirationDurationInMinutes);
-		
+    if (minutesDifference <= expirationDurationInMinutes) {		
         // if (userOTP === storedOTP.otp) {
         //     return true; // OTP is valid and not expired
         // }
@@ -93,11 +82,10 @@ export const jwtGenerate = async (id: string) => {
 // 		})
 // 		result = info.messageId;
 
-// 		console.log("Message sent: %s", info.messageId);
-// 		console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+// 		log.info("Message sent: %s", info.messageId);
 // 		// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 // 	} catch (err) {
-// 		console.log("error", err);
+// 		log.error("error", err);
 // 		result = false;
 // 		throw err;
 // 	}
@@ -132,3 +120,11 @@ export function randomNumber(length: number) {
 
 // ====================================================================================================
 // ====================================================================================================
+
+export const requestLogger = async(req: any, res: any, next: any) => {
+    log.info("http request", {
+        method: req.method,
+        url: req.url,
+    });
+    next();
+}

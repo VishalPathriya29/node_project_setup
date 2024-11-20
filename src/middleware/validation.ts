@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
 import * as apiResponse from '../helper/response'
+import log from "../helper/logger";
 
 const validationCheck = async (value: any) => {
     let msg = value.error.details[0].message;
-    console.log(msg);
+    log.info(msg);
 
     msg = msg.replace(/"/g, "");
     msg = msg.replace('_', " ");

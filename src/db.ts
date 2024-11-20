@@ -1,5 +1,6 @@
 import mysql from 'mysql2';
 import 'dotenv/config';
+import log from './helper/logger';
 
 const pool = mysql.createPool({
     host: process.env.DB_HOST,
@@ -11,7 +12,7 @@ const pool = mysql.createPool({
 
 pool.getConnection((err, connection) => {
     if (err) throw err;
-    console.log("Database connected successfully");
+    log.info("Database connected successfully");
     connection.release();
 });
 
